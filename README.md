@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# airlineslinks — Complete Ready-to-Run Project
 
-## Getting Started
+This is the **whole project**, already scaffolded and built — not a starter to merge into
+something else. No `create-next-app` step needed. Unzip, install, run.
 
-First, run the development server:
+## Setup (3 steps)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. **Unzip this folder as `D:\airlineslinks`** (or wherever you want the project to live).
+   Open it in VS Code: `code D:\airlineslinks`
+
+2. **Install dependencies** (in a VS Code terminal, inside the project folder):
+   ```
+   npm install
+   ```
+
+3. **Run it:**
+   ```
+   npm run dev
+   ```
+   Then open `http://localhost:3000` in your browser.
+
+That's it — no copying folders, no overwriting files, no merge conflicts.
+
+## What to check once it's running
+
+- `http://localhost:3000/` — homepage: hero, airport search, live flight board
+- `http://localhost:3000/airport/OPKC` — full airport detail page (METAR/TAF/NOTAMs/Runways tabs)
+- `http://localhost:3000/nat-tracks` — today's live North Atlantic organized tracks
+- `http://localhost:3000/api/metar?icao=OPKC` — raw METAR API response
+- `http://localhost:3000/api/nat-tracks` — raw NAT tracks API response
+- `http://localhost:3000/api/airports/search?q=karachi` — airport search API
+
+**Paste back exactly what you see for each** — a working page, an error, or a blank
+screen — so we can fix anything that comes up. Your machine has normal internet access
+(my sandbox is network-restricted, which is why some of these couldn't be tested on my end).
+
+## Environment variables (optional — site works without them)
+
+```
+copy .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Every value in it is optional right now:
+- `UPSTASH_REDIS_REST_URL` / `TOKEN` — not needed, Next.js's built-in caching covers MVP
+- `FAA_API_KEY` — only for future official FAA NOTAM access (not used yet)
+- `EIA_API_KEY` — only for a future jet fuel price feature (not built yet)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What's inside
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+airlineslinks/
+├── public/airports.json       ← 6,000 airports w/ runways + frequencies (OurAirports data)
+├── scripts/                   ← Python script to refresh airports.json later, if needed
+├── lib/
+│   ├── airports.ts             ← airport search/lookup
+│   ├── aviation.ts             ← NOAA METAR/TAF, NOTAM fallback, flight category logic
+│   ├── natTracks.ts            ← FAA NAT track feed fetch + parser
+│   └── utils.ts
+├── tailwind.config.ts          ← exact design tokens from your Stitch export
+├── app/
+│   ├── globals.css / layout.tsx / page.tsx
+│   ├── api/                    ← metar, taf, notam, nat-tracks, airports/search routes
+│   ├── airport/[icao]/         ← airport detail page
+│   └── nat-tracks/             ← NAT-OTS page
+└── components/                 ← Navbar, BottomNav, AirportSearch, MetarCard, TafCard,
+                                    NotamCard, RunwayCard, FlightCategoryBadge, NatTrackCard,
+                                    LiveFlightBoard
+```
 
-## Learn More
+## Design decisions already made (see full chat for reasoning)
 
-To learn more about Next.js, take a look at the following resources:
+- No login, no sidebar, no profile UI — matches "100% free, no login required"
+- lucide-react icons (not Material Symbols) — matches your original tech spec
+- NAT Tracks parser built and tested against real FAA feed data before being shipped
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Known open items — still to build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/tools`, `/weather`, `/maps` pages (linked from nav, not built yet — will 404 for now)
+- Domain still hardcoded as placeholder in a couple of places (`lib/aviation.ts` User-Agent) —
+  update once subdomain vs. standalone decision is locked
+- Reference content (airspace classes, ETOPS, polar ops), overflight fee calculator, OpenSky
+  live tracker, MRO directory — all researched and scoped, not yet built
