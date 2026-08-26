@@ -152,16 +152,5 @@ export function distanceKm(
 }
 
 /** Decodes flight category from visibility (statute miles) and ceiling (ft AGL). */
-export function decodeFlightCategory(
-  visibilitySm: number | null,
-  ceilingFt: number | null
-): "VFR" | "MVFR" | "IFR" | "LIFR" | "UNKNOWN" {
-  if (visibilitySm === null && ceilingFt === null) return "UNKNOWN";
-  const vis = visibilitySm ?? 99;
-  const ceil = ceilingFt ?? 99999;
-
-  if (vis < 1 || ceil < 500) return "LIFR";
-  if (vis < 3 || ceil < 1000) return "IFR";
-  if (vis <= 5 || ceil <= 3000) return "MVFR";
-  return "VFR";
-}
+export { decodeFlightCategory } from "./flightCategory";
+export type { FlightCategory } from "./flightCategory";

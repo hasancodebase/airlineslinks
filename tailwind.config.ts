@@ -70,10 +70,12 @@ const config: Config = {
       fontSize: {
         "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "600" }],
         "headline-md": ["18px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }],
+        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
         "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
         "body-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+        "data-mono-lg": ["16px", { lineHeight: "22px", fontWeight: "500" }],
         "data-mono": ["13px", { lineHeight: "20px", fontWeight: "500" }],
-        "label-caps": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
       },
       borderRadius: {
         DEFAULT: "0.25rem",

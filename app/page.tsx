@@ -1,7 +1,7 @@
 // app/page.tsx
 import { Zap, LayoutGrid, Gift, Navigation } from "lucide-react";
 import AirportSearch from "@/components/AirportSearch";
-import LiveFlightBoard from "@/components/LiveFlightBoard";
+import FlightBoardSearch from "@/components/FlightBoardSearch";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -42,12 +42,15 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Live Flight Board Preview */}
+      {/* Live Flight Board */}
       <section className="bg-surface-container-lowest px-4 md:px-margin-page py-10">
-        <h2 className="text-headline-md text-on-surface mb-8 border-b border-border-subtle pb-4">
-          Live Flight Board Preview
-        </h2>
-        <LiveFlightBoard />
+        <div className="max-w-content mx-auto w-full mb-6">
+          <h2 className="text-headline-md text-on-surface mb-1">Live Flight Board</h2>
+          <p className="text-body-sm text-data-text">
+            Check live conditions for any airport, or several at once.
+          </p>
+        </div>
+        <FlightBoardSearch />
       </section>
 
       {/* Feature pillars */}
