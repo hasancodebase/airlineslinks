@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { DARK_TILE_URL, DARK_TILE_ATTRIBUTION } from "@/lib/mapTiles";
 
 export type AircraftState = {
   icao24: string;
@@ -146,10 +147,7 @@ export default function LiveTrafficMap({
         scrollWheelZoom
         style={{ width: "100%", height: "100%", background: "#0b1326" }}
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        />
+        <TileLayer attribution={DARK_TILE_ATTRIBUTION} url={DARK_TILE_URL} />
         {withPosition.map((s) => (
           <AnimatedMarker
             key={s.icao24}

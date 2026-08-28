@@ -1,7 +1,7 @@
 // app/api/metar/batch/route.ts
 // GET /api/metar/batch?icaos=OPKC,EGLL,KJFK
 import { NextRequest, NextResponse } from "next/server";
-import { fetchMetar, decodeFlightCategory } from "@/lib/aviation";
+import { fetchMetar, fetchTaf, decodeFlightCategory } from "@/lib/aviation";
 import { getAirportByIcao } from "@/lib/airports";
 
 // Not "edge" — getAirportByIcao reads public/airports.json via fs, which
@@ -47,35 +47,18 @@ export async function GET(request: NextRequest) {
   const results = await Promise.all(
     codes.map(async (icao) => {
       const airport = getAirportByIcao(icao);
-      try {
-        const metarData = await fetchMetar(icao);
-        const metar = metarData[0];
-        const visibilitySm =
-          typeof metar?.visib === "number"
-            ? metar.visib
-            : parseFloat(String(metar?.visib)) || null;
-        const category = decodeFlightCategory(visibilitySm, null);
-        const wind =
-          metar?.wdir !== undefined && metar?.wspd !== undefined
-            ? `${metar.wdir}/${metar.wspd}KT`
-            : "—";
-        return {
-          icao,
-          found: Boolean(airport),
-          city: airport?.city ?? null,
-          country: airport?.country ?? null,
-          category,
-          wind,
-          windGustKt: metar?.wgst ?? null,
-          tempC: metar?.temp ?? null,
-          dewpointC: metar?.dewp ?? null,
-          visibilitySm,
-          altimeterInHg: metar?.altim ?? null,
-          observedAt: metar?.reportTime ?? null,
-          rawMetar: metar?.rawOb ?? null,
-          error: null as string | null,
-        };
-      } catch (err) {
+
+      // Fetch METAR and TAF independently — a TAF failure shouldn't hide a
+      // working METAR, and vice versa.
+      const [metarResult, tafResult] = await Promise.allSettled([
+        fetchMetar(icao),
+        fetchTaf(icao),
+      ]);
+
+      const rawTaf =
+        tafResult.status === "fulfilled" ? tafResult.value[0]?.rawTAF ?? null : null;
+
+      if (metarResult.status === "rejected") {
         return {
           icao,
           found: Boolean(airport),
@@ -90,9 +73,41 @@ export async function GET(request: NextRequest) {
           altimeterInHg: null,
           observedAt: null,
           rawMetar: null,
-          error: err instanceof Error ? err.message : "Failed to fetch METAR",
+          rawTaf,
+          error: metarResult.reason instanceof Error
+            ? metarResult.reason.message
+            : "Failed to fetch METAR",
         };
       }
+
+      const metar = metarResult.value[0];
+      const visibilitySm =
+        typeof metar?.visib === "number"
+          ? metar.visib
+          : parseFloat(String(metar?.visib)) || null;
+      const category = decodeFlightCategory(visibilitySm, null);
+      const wind =
+        metar?.wdir !== undefined && metar?.wspd !== undefined
+          ? `${metar.wdir}/${metar.wspd}KT`
+          : "—";
+
+      return {
+        icao,
+        found: Boolean(airport),
+        city: airport?.city ?? null,
+        country: airport?.country ?? null,
+        category,
+        wind,
+        windGustKt: metar?.wgst ?? null,
+        tempC: metar?.temp ?? null,
+        dewpointC: metar?.dewp ?? null,
+        visibilitySm,
+        altimeterInHg: metar?.altim ?? null,
+        observedAt: metar?.reportTime ?? null,
+        rawMetar: metar?.rawOb ?? null,
+        rawTaf,
+        error: null as string | null,
+      };
     })
   );
 

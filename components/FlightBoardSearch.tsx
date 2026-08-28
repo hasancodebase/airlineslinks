@@ -21,6 +21,7 @@ type BoardResult = {
   altimeterInHg: number | null;
   observedAt: string | null;
   rawMetar: string | null;
+  rawTaf: string | null;
   error: string | null;
 };
 
@@ -215,13 +216,25 @@ export default function FlightBoardSearch({
                   )}
                 </div>
 
-                {r.rawMetar ? (
-                  <div className="bg-surface-container-high border-l-2 border-primary rounded px-3 py-2.5 font-mono text-data-mono-lg text-on-surface overflow-x-auto whitespace-nowrap">
-                    {r.rawMetar}
-                  </div>
-                ) : (
-                  <div className="text-body-md text-data-text italic">
-                    No current METAR available for this airport.
+                <div className="flex flex-col gap-2">
+                  <span className="text-label-caps text-data-text">METAR</span>
+                  {r.rawMetar ? (
+                    <div className="bg-surface-container-high border-l-2 border-primary rounded px-3 py-2.5 font-mono text-data-mono-lg text-on-surface overflow-x-auto whitespace-nowrap">
+                      {r.rawMetar}
+                    </div>
+                  ) : (
+                    <div className="text-body-md text-data-text italic">
+                      No current METAR available for this airport.
+                    </div>
+                  )}
+                </div>
+
+                {r.rawTaf && (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-label-caps text-data-text">TAF</span>
+                    <div className="bg-surface-container-high border-l-2 border-tertiary rounded px-3 py-2.5 font-mono text-data-mono-lg text-on-surface overflow-x-auto whitespace-pre-wrap">
+                      {r.rawTaf}
+                    </div>
                   </div>
                 )}
 

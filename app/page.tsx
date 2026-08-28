@@ -1,8 +1,66 @@
 // app/page.tsx
-import { Zap, LayoutGrid, Gift, Navigation } from "lucide-react";
+import { Zap, LayoutGrid, Gift, Navigation, CloudSun, Radar, Map as MapIcon, Calculator, BookOpen } from "lucide-react";
 import AirportSearch from "@/components/AirportSearch";
-import FlightBoardSearch from "@/components/FlightBoardSearch";
 import Link from "next/link";
+
+type Feature = {
+  href: string;
+  title: string;
+  description: string;
+  icon: typeof CloudSun;
+  accent: "primary" | "secondary" | "tertiary";
+};
+
+const FEATURES: Feature[] = [
+  {
+    href: "/weather",
+    title: "Weather",
+    description: "Live METAR, TAF, and a rain radar loop for any airport, updated in real time.",
+    icon: CloudSun,
+    accent: "primary",
+  },
+  {
+    href: "/tools/live-traffic",
+    title: "Live Traffic Tracker",
+    description: "Real aircraft positions on an animated map, powered by OpenSky Network.",
+    icon: Radar,
+    accent: "secondary",
+  },
+  {
+    href: "/nat-tracks",
+    title: "North Atlantic Tracks",
+    description: "Today's eastbound and westbound NAT-OTS routes, straight from the FAA feed.",
+    icon: Navigation,
+    accent: "tertiary",
+  },
+  {
+    href: "/maps",
+    title: "Maps & Routes",
+    description: "Airport search, oceanic tracks, and live traffic brought together in one view.",
+    icon: MapIcon,
+    accent: "primary",
+  },
+  {
+    href: "/tools/overflight-fees",
+    title: "Overflight Fee Calculator",
+    description: "Estimate US FAA enroute and oceanic overflight fees in seconds.",
+    icon: Calculator,
+    accent: "secondary",
+  },
+  {
+    href: "/tools/reference",
+    title: "Ops Reference Guide",
+    description: "Airspace classes, the semicircular rule, ETOPS/EDTO, and polar routes.",
+    icon: BookOpen,
+    accent: "tertiary",
+  },
+];
+
+const ACCENT_STYLES: Record<Feature["accent"], string> = {
+  primary: "bg-primary-container/20 text-primary-container group-hover:bg-primary-container/30",
+  secondary: "bg-secondary-container/20 text-secondary group-hover:bg-secondary-container/30",
+  tertiary: "bg-tertiary-container/20 text-tertiary group-hover:bg-tertiary-container/30",
+};
 
 export default function HomePage() {
   return (
@@ -29,28 +87,45 @@ export default function HomePage() {
           Explore All Tools
         </Link>
 
-        <Link
-          href="/nat-tracks"
-          className="mt-3 inline-flex items-center gap-2 text-data-text hover:text-primary transition-colors text-body-sm"
-        >
-          <Navigation size={16} />
-          View today&apos;s North Atlantic Tracks (NAT-OTS)
-        </Link>
-
         <p className="mt-8 text-label-caps text-data-text uppercase">
           Trusted by 5,000+ aviation professionals
         </p>
       </section>
 
-      {/* Live Flight Board */}
-      <section className="bg-surface-container-lowest px-4 md:px-margin-page py-10">
-        <div className="max-w-content mx-auto w-full mb-6">
-          <h2 className="text-headline-md text-on-surface mb-1">Live Flight Board</h2>
-          <p className="text-body-sm text-data-text">
-            Check live conditions for any airport, or several at once.
+      {/* Feature showcase */}
+      <section className="bg-surface-container-lowest px-4 md:px-margin-page py-14">
+        <div className="max-w-content mx-auto w-full mb-10 text-center">
+          <h2 className="text-headline-lg text-on-surface mb-2">
+            Everything You Need for Flight Ops
+          </h2>
+          <p className="text-body-md text-data-text max-w-xl mx-auto">
+            Six tools, all live, all free — no login required.
           </p>
         </div>
-        <FlightBoardSearch />
+
+        <div className="max-w-content mx-auto w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          {FEATURES.map((f) => {
+            const Icon = f.icon;
+            return (
+              <Link
+                key={f.href}
+                href={f.href}
+                className="group bg-surface-card border border-border-subtle rounded-xl p-container-padding
+                           flex flex-col gap-4 hover:border-primary hover:-translate-y-0.5 transition-all"
+              >
+                <div
+                  className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${ACCENT_STYLES[f.accent]}`}
+                >
+                  <Icon size={24} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-headline-md text-on-surface">{f.title}</h3>
+                  <p className="text-body-sm text-data-text">{f.description}</p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </section>
 
       {/* Feature pillars */}

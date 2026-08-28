@@ -1,11 +1,21 @@
 // app/weather/page.tsx
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import FlightBoardSearch from "@/components/FlightBoardSearch";
 
+const RadarMap = dynamic(() => import("@/components/RadarMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] rounded-lg border border-border-subtle bg-surface-card flex items-center justify-center text-body-sm text-data-text">
+      Loading radar…
+    </div>
+  ),
+});
+
 export const metadata: Metadata = {
-  title: "Aviation Weather — Live METAR Lookup | AirTech Tools",
+  title: "Aviation Weather — Live METAR, TAF & Radar | AirTech Tools",
   description:
-    "Search any airport, or several at once, for live METAR conditions — wind, visibility, temperature, and altimeter. Free, direct from NOAA.",
+    "Search any airport, or several at once, for live METAR and TAF conditions, plus a live rain radar loop. Free, direct from NOAA and RainViewer.",
 };
 
 export default function WeatherPage() {
@@ -14,11 +24,18 @@ export default function WeatherPage() {
       <header className="flex flex-col gap-1 border-b border-border-subtle pb-6">
         <h1 className="text-headline-lg text-on-surface">Weather</h1>
         <p className="text-body-md text-data-text max-w-2xl">
-          Live METAR conditions for any airport, or several at once — sourced directly from NOAA.
+          Live METAR and TAF for any airport, or several at once, plus a live radar loop —
+          sourced directly from NOAA and RainViewer.
         </p>
       </header>
 
-      <FlightBoardSearch variant="detailed" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-gutter items-start">
+        <FlightBoardSearch variant="detailed" />
+        <div className="lg:sticky lg:top-20">
+          <h2 className="text-headline-md text-on-surface mb-3">Live Radar</h2>
+          <RadarMap />
+        </div>
+      </div>
     </div>
   );
 }
