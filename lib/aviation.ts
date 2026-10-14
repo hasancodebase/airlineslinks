@@ -23,7 +23,8 @@ async function fetchJson<T>(
       Accept: "application/json",
       // NOAA asks API consumers to identify themselves — update the domain
       // once you've decided subdomain vs standalone.
-      "User-Agent": "airlineslinks.vercel.app aviation-tools (contact: you@example.com)",
+      "User-Agent":
+        "airlineslinks.vercel.app aviation-tools (contact: airlinestechops.com/about-us/)",
       ...init.headers,
     },
     next: { revalidate: revalidateSeconds },

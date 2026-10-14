@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "AirTech Tools — Free Live METAR, TAF, NOTAMs & Airport Data",
   description:
     "Live METAR, TAF, NOTAMs, airport data, and runway info for 70,000+ airports worldwide. Built for pilots, dispatchers, and aviation professionals. 100% free, no login required.",
+  verification: {
+    google: "8nN_gsntll2nric90o-blW7aglCmsS_tl92cMZRgPts",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
